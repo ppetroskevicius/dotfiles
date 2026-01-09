@@ -318,7 +318,6 @@ workspace 10 output DP-8
 
 # assign apps to workspaces
 # assign [app_id="Alacritty"] workspace 1
-# assign [app_id="dev.zed.Zed"] workspace 2
 # assign [app_id="google-chrome"] workspace 2
 # assign [instance="discord"] workspace 3
 assign [instance="cursor"] workspace 2

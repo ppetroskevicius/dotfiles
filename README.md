@@ -13,7 +13,7 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ppetroskevicius/dotfiles
 ## What's Included
 
 - **Shell environments**: Bash, Zsh with shared configuration
-- **Editor configs**: Vim, Cursor, Zed with consistent formatting
+- **Editor configs**: Vim, Cursor with consistent formatting
 - **Development tools**: Ruff (Python), unified formatting standards  
 - **System configs**: Window managers (sway), terminal (alacritty), etc.
 - **Security**: Proper permission handling for sensitive files

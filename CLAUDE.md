@@ -42,7 +42,6 @@ This is a **chezmoi dotfiles repository** that manages personal configuration fi
 
 **Development Tools:**
 - `private_dot_config/private_Cursor/` - Cursor IDE settings with comprehensive language support
-- `private_dot_config/zed/` - Zed editor configuration with Python/Ruff LSP setup
 - `private_dot_vimrc` - Vim configuration
 - `private_dot_tmux.conf` - Terminal multiplexer settings
 
