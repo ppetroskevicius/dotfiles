@@ -1,0 +1,6 @@
+# Chezmoi configuration file
+# This file configures how chezmoi manages your dotfiles
+
+[data]
+    # OS-specific Cursor configuration directory
+    cursorConfigDir = "{{ if eq .chezmoi.os \"darwin\" }}{{ .chezmoi.homeDir }}/Library/Application Support/Cursor/User{{ else }}{{ .chezmoi.homeDir }}/.config/Cursor/User{{ end }}"
