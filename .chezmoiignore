@@ -1,6 +1,1 @@
 README.md
-# Cursor config files are handled by run_install-cursor-config.sh.tmpl for OS-specific paths
-.config/Cursor/User/settings.json
-.config/Cursor/User/extensions.json
-Library/Application Support/Cursor/User/settings.json
-Library/Application Support/Cursor/User/extensions.json
