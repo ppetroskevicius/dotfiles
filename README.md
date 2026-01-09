@@ -56,6 +56,8 @@ chezmoi edit ~/.zshrc
 3. Commit and push:
    ```bash
    cd ~/.local/share/chezmoi
+   # or
+   chezmoi cd
    git add .
    git commit -m "Add new dotfile"
    git push
@@ -89,6 +91,10 @@ chezmoi edit ~/.zshrc
 - **Checking Status:** Use `chezmoi status` to see which files differ between the source and your home directory.
 
 - **Viewing Differences:** Use `chezmoi diff` to see what changes would be applied.
+
+- **Viewing Managed Files:** Use `chezmoi managed` to see all files currently managed by chezmoi.
+
+- **Viewing Unmanaged Files:** Use `chezmoi unmanaged` to see files in your home directory that are not managed by chezmoi.
 
 - **Repository Location:** The chezmoi source directory is at `~/.local/share/chezmoi`. This is a git repository that tracks all your dotfile sources.
 
