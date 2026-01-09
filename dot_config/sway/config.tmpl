@@ -1,3 +1,4 @@
+{{- if eq .machine.type "dt-dev" }}
 # Default config for sway
 #
 # Copy this to ~/.config/sway/config and edit it to your liking.
@@ -348,3 +349,4 @@ exec swaymsg 'workspace 3; \
 #
 # Suspend the system when the lid is closed.
 bindswitch lid:on exec systemctl suspend
+{{- end }}

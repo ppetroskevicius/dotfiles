@@ -1,3 +1,4 @@
+{{- if eq .machine.type "dt-dev" }}
 # Ruff configuration for consistent Python formatting and linting
 # https://docs.astral.sh/ruff/configuration/
 
@@ -35,3 +36,4 @@ quote-style = "double"
 indent-style = "space"
 skip-string-normalization = false
 line-ending = "auto"
+{{- end }}

@@ -12,6 +12,9 @@
 [data.machine]
     personal = true
     work = false
+    # Machine type - set this manually or use MACHINE_TYPE environment variable
+    # Available types: bm-hypervisor, vm-k8s-node, vm-dev-container, vm-service, dt-dev
+    type = "dt-dev"
 
 [edit]
     command = "vim"

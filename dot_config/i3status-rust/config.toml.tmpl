@@ -1,3 +1,4 @@
+{{- if eq .machine.type "dt-dev" }}
 icons_format = "{icon}"
 
 [theme]
@@ -135,3 +136,4 @@ step = 50
 block = "time"
 interval = 60
 format = " $timestamp.datetime(f:'%a %m/%d %R') "
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if eq .machine.type "dt-dev" }}
 # Take a look at the mako manpage with the command:
 #   man 5 mako
 # To view all configuration options.
@@ -36,3 +37,4 @@ border-color=#a3be8c
 
 [app-name=lightcord summary~="(.*(^| )orz|ORZ|sto|STO|otl|OTL( |$).*)"]
 invisible=1
+{{- end }}

@@ -94,6 +94,38 @@ chezmoi apply
    chezmoi update
    ```
 
+## Machine Type Configuration
+
+This dotfiles repository supports different machine types, deploying different sets of configuration files based on the target machine:
+
+- **Desktop machines** (`dt-dev`): Get all configs including GUI applications, editors, cloud tools
+- **Server machines**: Only get core configs like SSH, Git, Zsh, Tmux, Vim
+
+### Setting Machine Type
+
+**Default:** The repository defaults to `dt-dev` (desktop development) which includes all configuration files.
+
+**Manual Override:** Set the machine type by editing `~/.config/chezmoi/chezmoi.toml`:
+```toml
+[data.machine]
+    type = "vm-k8s-node"  # or bm-hypervisor, vm-dev-container, vm-service
+```
+
+**Hostname-Based Detection:** Use the included script to automatically detect based on hostname patterns:
+```bash
+cd ~/.local/share/chezmoi
+./check-machine-type.sh
+# This will suggest the appropriate machine type based on hostname
+# Then manually set it in ~/.config/chezmoi/chezmoi.toml
+```
+
+**Available Types:**
+- `dt-dev`: Development Desktop (default - all configs)
+- `bm-hypervisor`: Bare Metal Hypervisor (core configs only)
+- `vm-k8s-node`: Kubernetes Node (core configs only) 
+- `vm-dev-container`: Development Container Host (core configs only)
+- `vm-service`: Service VM (core configs only)
+
 ## Important Notes
 
 - **File Permissions:** Files with `private_` prefix are deployed with `0600` permissions (owner read/write only) but are stored in plain text in the repository. For actual encryption, use the `encrypted_` prefix with `chezmoi encrypt`.

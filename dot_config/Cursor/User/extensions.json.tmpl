@@ -1,3 +1,4 @@
+{{- if eq .machine.type "dt-dev" }}
 {
   "recommendations": [
     // ──────── Python Development ────────
@@ -49,3 +50,4 @@
     "gera2ld.markmap-vscode" // Markdown to mindmap visualization
   ]
 }
+{{- end }}

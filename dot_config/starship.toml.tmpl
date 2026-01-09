@@ -1,3 +1,4 @@
+{{- if eq .machine.type "dt-dev" }}
 # ~/.config/starship.toml
 
 # Get editor completions based on the config schema
@@ -89,3 +90,4 @@ symbol = ' ' # This is the \uf270 Nerd Font icon
 [aws.region_aliases]
 us-east-2 = 'us'
 ap-northeast-1 = 'jp'
+{{- end }}
