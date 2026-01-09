@@ -1,1 +1,19 @@
 README.md
+CLAUDE.md
+*.bak
+.DS_Store
+.git
+*.swp
+*.tmp
+*~
+
+# Development files that should stay in source only
+scripts/
+docs/
+.github/
+
+# Temporary files
+**/.vscode/
+**/node_modules/
+**/__pycache__/
+**/.pytest_cache/

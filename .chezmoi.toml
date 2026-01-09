@@ -1,0 +1,38 @@
+# Chezmoi configuration file
+# Documentation: https://www.chezmoi.io/reference/configuration-file/
+
+[data]
+    editor = "vim"
+    development = true
+    
+[data.formatting]
+    indent = "  "  # 2 spaces
+    line_length = 150
+    
+[data.machine]
+    personal = true
+    work = false
+
+[edit]
+    command = "vim"
+
+[git]
+    autoCommit = false
+    autoPush = false
+
+[merge]
+    command = "vimdiff"
+
+# Sensible defaults for file operations
+[cd]
+    command = "bash"
+
+[diff]
+    exclude = ["scripts"]
+    pager = "delta"
+
+# Template data that can be used in dotfiles
+[data.paths]
+    home = "~"
+    config = "~/.config"
+    local_bin = "~/.local/bin"

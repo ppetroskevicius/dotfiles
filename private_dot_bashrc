@@ -2,18 +2,12 @@
 # shellcheck shell=bash
 # runs for each non-login interactive shells like alacritty, or terminal in gnome
 
+# Load shared configuration
+# shellcheck source=~/.config/shell/common.sh
+[ -f "$HOME/.config/shell/common.sh" ] && source "$HOME/.config/shell/common.sh"
+
+# Bash-specific settings
 export PS1="\u@\h:\[\e[0;36m\]\w\[\e[0m\]$ "
-export EDITOR='vim'
-export CLICOLOR=1
-
-# Initialize nvm
-export NVM_DIR="$HOME/.nvm"
-# shellcheck source=/dev/null
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-# shellcheck source=/dev/null
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-
-export PATH="$PATH:$HOME/.npm-global/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/.local/share/pnpm:/opt/rocm-6.4.0/bin:/home/fastctl/.lmstudio/bin:$HOME/bin"
 
 # --- GCP State Management Functions for Starship ---
 

@@ -68,9 +68,6 @@
   "python.analysis.autoSearchPaths": true,
   "python.analysis.diagnosticMode": "workspace",
   "python.analysis.stubPath": "./typings",
-  "python.linting.enabled": true,
-  "python.linting.ruffEnabled": true,
-  "python.formatting.provider": "ruff",
 
   // ────────── TypeScript tooling ──────────
   "typescript.preferences.includePackageJsonAutoImports": "on",
@@ -108,22 +105,9 @@
   ],
 
   // ────────── Cursor settings ──────────
-  "cursorpyright.analysis.autoImportCompletions": true,
-  "cursorpyright.analysis.autoSearchPaths": true,
-  "cursorpyright.analysis.diagnosticMode": "workspace",
-  "cursorpyright.analysis.exclude": [
-    "**/.git",
-    "**/.venv",
-    "**/venv",
-    "**/__pycache__",
-    "**/node_modules",
-    "common/**",
-    "system/**",
-    "third_party/**",
-    "tools/**"
-  ],
-  "cursorpyright.analysis.stubPath": "./typings",
-  "cursorpyright.analysis.typeCheckingMode": "strict",
+  // Ruff handles all Python linting and formatting
+  "ruff.organizeImports": true,
+  "ruff.fixAll": true,
 
   // ────────── Terminal settings ──────────
   "terminal.integrated.fontFamily": "FiraCode Nerd Font Mono",
