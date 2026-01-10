@@ -1,6 +1,7 @@
-{{- if eq .machine.type "dt-dev" }}
 #!/usr/bin/env bash
 set -euo pipefail
+
+{{- if eq .machine.type "dt-dev" }}
 
 # Clone Alacritty themes if not already present
 if [ ! -d "$HOME/.config/alacritty/themes" ]; then

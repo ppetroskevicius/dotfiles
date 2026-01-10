@@ -4,11 +4,11 @@
 [data]
     editor = "vim"
     development = true
-    
+
 [data.formatting]
     indent = "  "  # 2 spaces
     line_length = 150
-    
+
 [data.machine]
     personal = true
     work = false
@@ -39,3 +39,10 @@
     home = "~"
     config = "~/.config"
     local_bin = "~/.local/bin"
+
+# Install password manager before reading source state
+[hooks.read-source-state.pre]
+    command = ".install-password-manager.sh"
+
+[onepassword]
+  "prompt" = true

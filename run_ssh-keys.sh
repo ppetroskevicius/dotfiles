@@ -9,12 +9,6 @@ fi
 # Set up SSH keys after they're installed by chezmoi
 if [ -f "$HOME/.ssh/id_ed25519" ]; then
 	echo ">>> Setting up SSH keys..."
-	chmod 600 "$HOME/.ssh/id_ed25519"
-
-	# Generate public key if it doesn't exist
-	if [ ! -f "$HOME/.ssh/id_ed25519.pub" ]; then
-		ssh-keygen -y -f "$HOME/.ssh/id_ed25519" >"$HOME/.ssh/id_ed25519.pub"
-	fi
 
 	# Add to authorized_keys
 	if [ ! -f "$HOME/.ssh/authorized_keys" ] || ! grep -q "$(cat "$HOME/.ssh/id_ed25519.pub")" "$HOME/.ssh/authorized_keys" 2>/dev/null; then
