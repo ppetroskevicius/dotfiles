@@ -45,4 +45,5 @@
     command = ".install-password-manager.sh"
 
 [onepassword]
-  "prompt" = true
+  mode = "service"  # or "connect"
+  prompt = false    # Explicitly disable to avoid errors
