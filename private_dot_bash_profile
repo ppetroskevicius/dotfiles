@@ -75,8 +75,5 @@ fi
 # for KVM
 export LIBVIRT_DEFAULT_URI="qemu:///system"
 
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/home/fastctl/.lmstudio/bin"
-
 # shellcheck source=/dev/null
 source "$HOME"/.bashrc
