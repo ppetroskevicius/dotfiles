@@ -33,3 +33,4 @@ export GCP_DEMO_TERRAFORM_SA="op://build/ev5xkkud6nr57o24ffzfbfsaou/gcp-demo-ter
 export I3RS_GITHUB_TOKEN="op://build/ev5xkkud6nr57o24ffzfbfsaou/i3rs-github-token"
 export REPLICATE_API_TOKEN="op://build/ev5xkkud6nr57o24ffzfbfsaou/replicate-api-token"
 export OP_SERVICE_ACCOUNT_TOKEN="op://build/ev5xkkud6nr57o24ffzfbfsaou/op-service-account-token"
+export ANSIBLE_VAULT_PASSWORD="op://build/ev5xkkud6nr57o24ffzfbfsaou/ansible-vault-password"
