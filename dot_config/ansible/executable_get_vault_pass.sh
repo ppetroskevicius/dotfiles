@@ -2,4 +2,4 @@
 # Ansible calls this script. The script asks 1Password for the secret.
 # Because OP_SERVICE_ACCOUNT_TOKEN is in the env, no login is required.
 
-op read "op://HomeLab/AnsibleVault/password" --no-newline
+op read "op://build/ev5xkkud6nr57o24ffzfbfsaou/ansible-vault-password" --no-newline
