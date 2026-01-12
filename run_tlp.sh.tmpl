@@ -6,11 +6,6 @@
 
 set -euo pipefail
 
-# Only run on desktop development machines
-{{- if ne .machine.type "dt-dev" }}
-exit 0
-{{- end }}
-
 # Check if TLP is installed
 if ! command -v tlp &> /dev/null; then
     echo "TLP is not installed. Please install tlp package first."
