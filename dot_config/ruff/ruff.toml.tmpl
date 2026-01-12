@@ -1,4 +1,3 @@
-{{- if eq .machine.type "dt-dev" }}
 # Ruff configuration for consistent Python formatting and linting
 # https://docs.astral.sh/ruff/configuration/
 
@@ -23,7 +22,7 @@ select = [
 # Common directories to exclude
 exclude = [
   ".git",
-  ".venv", 
+  ".venv",
   "venv",
   "__pycache__",
   "build",
@@ -36,4 +35,3 @@ quote-style = "double"
 indent-style = "space"
 skip-string-normalization = false
 line-ending = "auto"
-{{- end }}
