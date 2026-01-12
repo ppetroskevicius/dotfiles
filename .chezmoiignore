@@ -44,7 +44,7 @@ docs/
 {{- if not $isDesktop }}
 # Desktop-only configurations
 dot_alacritty.toml.tmpl
-run_alacritty-themes.sh.tmpl
+run_alacritty_themes.sh.tmpl
 dot_config/starship.toml.tmpl
 dot_config/sway/config.tmpl
 dot_config/mako/config.tmpl
@@ -53,6 +53,7 @@ dot_config/ruff/ruff.toml.tmpl
 dot_config/Cursor/**
 dot_aws/**
 private_etc_wireguard_gw0.conf.tmpl
+run_ssh_keys.sh
 run_wireguard.sh
 run_tlp.sh.tmpl
 dot_config/tlp/**
