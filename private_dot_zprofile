@@ -3,28 +3,27 @@
 #    Must run first to ensure 'op', 'jq', etc. are found in PATH
 # ==========================================
 if [[ "$(uname -s)" == "Darwin" ]]; then
-	if [[ -x "/opt/homebrew/bin/brew" ]]; then
-		eval "$(/opt/homebrew/bin/brew shellenv)"
-	elif [[ -x "/usr/local/bin/brew" ]]; then
-		eval "$(/usr/local/bin/brew shellenv)"
-	fi
+  if [[ -x "/opt/homebrew/bin/brew" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -x "/usr/local/bin/brew" ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
 fi
 
 # ==========================================
 # 2. 1Password Secrets Injection
 # ==========================================
-command -v op >/dev/null && \
-  eval "$(op inject -i "$HOME/.config/1p/op.env.exports.tpl" 2>/dev/null)"
-
+command -v op >/dev/null &&
+  eval "$(op inject -i "$HOME/.config/1p/op.env.exports.tpl")"
 
 # ==========================================
 # 3. SSH Agent (Keychain)
 # ==========================================
 if command -v keychain >/dev/null 2>&1; then
-	# Only try to add key if it actually exists
-	if [ -f "$HOME/.ssh/id_ed25519" ]; then
-		eval "$(keychain --eval --quiet id_ed25519)"
-	fi
+  # Only try to add key if it actually exists
+  if [ -f "$HOME/.ssh/id_ed25519" ]; then
+    eval "$(keychain --eval --quiet id_ed25519)"
+  fi
 fi
 
 # ==========================================
@@ -33,26 +32,26 @@ fi
 # ==========================================
 if [[ "$(uname -s)" == "Linux" ]]; then
 
-	# KVM Defaults (Useful on hypervisors too, harmless if missing)
-	if [ -e /var/run/libvirt/libvirt-sock ]; then
-		export LIBVIRT_DEFAULT_URI="qemu:///system"
-	fi
+  # KVM Defaults (Useful on hypervisors too, harmless if missing)
+  if [ -e /var/run/libvirt/libvirt-sock ]; then
+    export LIBVIRT_DEFAULT_URI="qemu:///system"
+  fi
 
-	# Wayland & IME (Strictly for Sway environments)
-	if command -v sway >/dev/null; then
-		export XDG_CURRENT_DESKTOP=sway
-		export MOZ_ENABLE_WAYLAND=1
+  # Wayland & IME (Strictly for Sway environments)
+  if command -v sway >/dev/null; then
+    export XDG_CURRENT_DESKTOP=sway
+    export MOZ_ENABLE_WAYLAND=1
 
-		# IME configuration (fcitx5)
-		export XMODIFIERS=@im=fcitx
-		export GTK_IM_MODULE=fcitx
-		export QT_IM_MODULE=fcitx
-	fi
+    # IME configuration (fcitx5)
+    export XMODIFIERS=@im=fcitx
+    export GTK_IM_MODULE=fcitx
+    export QT_IM_MODULE=fcitx
+  fi
 fi
 
 # ==========================================
 # 5. Interactive Shell Config
 # ==========================================
 if [ -f "$HOME/.zshrc" ]; then
-	source "$HOME/.zshrc"
+  source "$HOME/.zshrc"
 fi

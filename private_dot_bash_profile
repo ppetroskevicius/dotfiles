@@ -2,8 +2,8 @@
 # shellcheck shell=bash
 # Runs for login sessions
 
-command -v op >/dev/null && \
-  eval "$(op inject -i "$HOME/.config/1p/op.env.exports.tpl" 2>/dev/null)"
+command -v op >/dev/null &&
+  eval "$(op inject -i "$HOME/.config/1p/op.env.exports.tpl")"
 
 # Load keychain and add SSH key if not already added
 eval "$(keychain --eval --quiet id_ed25519)"
@@ -15,7 +15,7 @@ export QT_IM_MODULE=fcitx
 
 # for Wayland/Sway desktop environment
 if [[ "$(uname -s)" == "Linux" ]] && command -v sway >/dev/null; then
-	export XDG_CURRENT_DESKTOP=sway
+  export XDG_CURRENT_DESKTOP=sway
 fi
 
 # for KVM
