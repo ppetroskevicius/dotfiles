@@ -1,5 +1,12 @@
+# ============================================================================
+# Documentation and repository management files
+# ============================================================================
 README.md
 CLAUDE.md
+
+# ============================================================================
+# Temporary and backup files
+# ============================================================================
 *.bak
 .DS_Store
 .git
@@ -7,13 +14,59 @@ CLAUDE.md
 *.tmp
 *~
 
+# ============================================================================
 # Development files that should stay in source only
+# ============================================================================
 scripts/
 docs/
 .github/
 
-# Temporary files
+# ============================================================================
+# Build artifacts and caches
+# ============================================================================
 **/.vscode/
 **/node_modules/
 **/__pycache__/
 **/.pytest_cache/
+
+# ============================================================================
+# Machine-type specific exclusions
+# ============================================================================
+
+{{- /* Detect machine type based on hostname prefix */ -}}
+{{- $isDesktop := hasPrefix "dt-" .chezmoi.hostname -}}
+{{- $isHypervisor := hasPrefix "bm-" .chezmoi.hostname -}}
+{{- $isK8sNode := hasPrefix "vm-k8s-" .chezmoi.hostname -}}
+{{- $isDevContainer := hasPrefix "vm-dev-" .chezmoi.hostname -}}
+{{- $isService := hasPrefix "vm-service-" .chezmoi.hostname -}}
+
+{{- /* Desktop-only files - ignore on all non-desktop machines */ -}}
+{{- if not $isDesktop }}
+# Desktop-only configurations
+dot_alacritty.toml.tmpl
+run_alacritty-themes.sh.tmpl
+dot_config/starship.toml.tmpl
+dot_config/sway/config.tmpl
+dot_config/mako/config.tmpl
+dot_config/i3status-rust/config.toml.tmpl
+dot_config/ruff/ruff.toml.tmpl
+dot_config/Cursor/**
+dot_aws/**
+private_etc_wireguard_gw0.conf.tmpl
+run_wireguard.sh
+run_tlp.sh.tmpl
+dot_config/tlp/**
+dot_config/ansible/**
+{{- end }}
+
+{{- /* Additional exclusions for specific machine types if needed */ -}}
+{{- if $isK8sNode }}
+# K8s nodes don't need these
+dot_config/ansible/**
+{{- end }}
+
+{{- /* Hypervisor-specific exclusions */ -}}
+{{- if $isHypervisor }}
+# Hypervisors don't need these
+dot_config/ansible/**
+{{- end }}

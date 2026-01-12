@@ -1,45 +1,10 @@
 # Chezmoi configuration file
 # Documentation: https://www.chezmoi.io/reference/configuration-file/
 
-[data]
-    editor = "vim"
-    development = true
-
-[data.formatting]
-    indent = "  "  # 2 spaces
-    line_length = 150
-
-[data.machine]
-    personal = true
-    work = false
-    # Machine type - set this manually or use MACHINE_TYPE environment variable
-    # Available types: bm-hypervisor, vm-k8s-node, vm-dev-container, vm-service, dt-dev
-    type = {{ if .machine.type }}{{ .machine.type | quote }}{{ else }}"dt-dev"{{ end }}
-
-[edit]
-    command = "vim"
-
 [git]
     autoCommit = false
-    autoPush = false
-
-[merge]
-    command = "vimdiff"
-
-# Sensible defaults for file operations
-[cd]
-    command = "bash"
-
-[diff]
-    exclude = ["scripts"]
-    pager = "delta"
-
-# Template data that can be used in dotfiles
-[data.paths]
-    home = "~"
-    config = "~/.config"
-    local_bin = "~/.local/bin"
+    autoPush = false  # Good to be explicit about not auto-pushing secrets
 
 [onepassword]
     mode = "service"  # Use service account token (OP_SERVICE_ACCOUNT_TOKEN)
-    prompt = false    # Explicitly disable to avoid errors
+    prompt = false    # Important for automation
