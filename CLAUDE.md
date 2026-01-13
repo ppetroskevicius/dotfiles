@@ -1,132 +1,174 @@
-# CLAUDE.md
+# Chezmoi Dotfiles for Home Lab
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This repository manages dotfiles across multiple machine types in a home lab environment using [Chezmoi](https://www.chezmoi.io/).
 
-## Repository Overview
+## Overview
 
-This is a **chezmoi dotfiles repository** that manages personal configuration files across multiple machines. Chezmoi is a tool for managing dotfiles with features like templating, encryption, and cross-platform support.
+- **Repository**: `ssh://git@github.com/ppetroskevicius/homelab.git`
+- **Chezmoi source**: `~/fun/homelab/chezmoi` (subdirectory of larger homelab repo)
+- **Config file**: `~/.config/chezmoi/chezmoi.toml`
 
-## Essential Chezmoi Commands
+## Prerequisites
 
-### Basic Operations
+Dotfiles are deployed via Ansible automation:
 
-- `chezmoi apply` - Apply all managed files to their target locations
-- `chezmoi status` - Show which files differ between source and target
-- `chezmoi diff` - Show what changes would be applied
-- `chezmoi update` - Pull latest changes from git and apply them
-- `chezmoi cd` - Change to the chezmoi source directory (~/.local/share/chezmoi)
+1. **1Password CLI** - Installed on target machines before running `chezmoi apply`
+2. **Service Account Token** - `OP_SERVICE_ACCOUNT_TOKEN` environment variable must be set
+3. **Chezmoi** - Installed on target machines
 
-### File Management
+## Machine Types
 
-- `chezmoi add ~/.filename` - Add an existing file to chezmoi management
-- `chezmoi edit ~/.filename` - Edit a managed file (opens source, applies on save)
-- `chezmoi managed` - List all managed files
-- `chezmoi unmanaged` - List unmanaged files in home directory
+Dotfiles are applied conditionally based on hostname prefixes:
 
-### Repository Operations
+| Machine Type              | Hostname Pattern | Purpose                              | Dotfile Scope      |
+| ------------------------- | ---------------- | ------------------------------------ | ------------------ |
+| **Desktop**               | `dt-*`           | Development desktops with GUI        | Full configuration |
+| **Bare Metal Hypervisor** | `bm-*`           | KVM hosts for running VMs            | Minimal (CLI only) |
+| **Kubernetes Node**       | `vm-k8s-*`       | K3s master/worker nodes              | Minimal (CLI only) |
+| **Dev Container**         | `vm-dev-*`       | Development container hosts          | Minimal (CLI only) |
+| **Service VM**            | `vm-service-*`   | Standalone services (NFS, databases) | Minimal (CLI only) |
 
-- `cd ~/.local/share/chezmoi` - Navigate to source directory for git operations
-- `git add . && git commit -m "message" && git push` - Standard git workflow after edits
+## Dotfile Categories
 
-## File Architecture
+### Universal (All Machine Types)
 
-### Naming Conventions
+Applied to all machines regardless of type:
 
-- `private_dot_filename` → `~/.filename` (deployed with 0600 permissions - only for sensitive files)
-- `dot_filename` → `~/.filename` (standard permissions - preferred for most configs)
-- Files in `dot_config/` → `~/.config/` directory structure
-- Shared shell configuration in `dot_config/shell/common.sh`
+- **Shell**: `.zshrc`, `.bashrc`, `.bash_profile`, `.zprofile`
+- **Tools**: `.vimrc`, `.tmux.conf`, `.editorconfig`
+- **Git**: `.gitconfig` (SSH enforcement, auto-rebase disabled)
+- **SSH**: `~/.ssh/config`, `~/.ssh/id_ed25519` (via 1Password)
 
-### Key Configuration Categories
+### Desktop-Only (`dt-*` machines)
 
-**Shell Environments:**
+GUI and development tools:
 
-- `private_dot_zshrc` - Zsh configuration with Oh-My-Zsh, PATH management, SSH keychain
-- `private_dot_bashrc` - Bash configuration
-- `private_dot_bash_profile` - Bash profile
+**Window Manager & UI:**
+
+- `~/.config/sway/` - Wayland window manager
+- `~/.config/i3status-rust/` - Status bar
+- `~/.config/mako/` - Notification daemon
+- `~/.alacritty.toml` - Terminal emulator
+- `~/.config/starship.toml` - Shell prompt
 
 **Development Tools:**
 
-- `private_dot_config/private_Cursor/` - Cursor IDE settings with comprehensive language support
-- `private_dot_vimrc` - Vim configuration
-- `private_dot_tmux.conf` - Terminal multiplexer settings
+- `~/.config/Cursor/` - Cursor IDE settings and extensions
+- `~/.config/ruff/ruff.toml` - Python linter (150 char lines, 2-space indent)
+- `~/.aws/` - AWS CLI configuration
+- `/etc/wireguard/gw0.conf` - WireGuard VPN for remote access
+- `/etc/tlp/` - Laptop power management
 
-**System Configuration:**
-
-- `private_dot_config/sway/` - Wayland window manager config
-- `private_dot_config/i3status-rust/` - Status bar configuration
-- `private_dot_config/mako/` - Notification daemon settings
-- `private_dot_alacritty.toml` - Terminal emulator config
-
-**Development Standards:**
-
-- `dot_config/ruff/ruff.toml` - Python linter/formatter (150 char line length, 2-space indent)
-- `dot_editorconfig` - Universal formatting standards across all file types
-- `private_dot_gitconfig` - Git settings with SSH enforcement and auto-rebase disabled
-- `.chezmoi.toml` - Chezmoi configuration with template data and preferences
-
-## Editor Configurations
-
-### Cursor IDE Extensions
-
-The repository includes a curated extension list covering:
+**Cursor IDE Extensions:**
 
 - Python: `ms-python.python`, `charliermarsh.ruff`
 - JavaScript/TypeScript: `dbaeumer.vscode-eslint`, `esbenp.prettier-vscode`
 - Shell: `mkhl.shfmt`, `timonwong.shellcheck`
 - Infrastructure: `hashicorp.terraform`, `github.vscode-github-actions`
-- Other: Rust, Go, Java, Markdown, GraphQL, CSV, TOML support
+- Other: Rust, Go, Java, Markdown, GraphQL, CSV, TOML
 
-### Code Style Standards
+## Configuration Standards
 
-- **Universal**: .editorconfig enforces 2-space indentation, UTF-8 encoding, LF line endings
-- **Python**: Ruff handles all linting and formatting (150-character line length, 2-space indent)
-- **Shell**: shfmt with `-bn -ci -sr -i 2` flags (binary ops at line start, switch cases indented)
-- **General**: Consistent formatting across all file types, trailing whitespace trimmed
+**Python (Ruff):**
 
-## Important Notes
+- Line length: 150 characters
+- Indentation: 2 spaces
 
-- All `private_` prefixed files are deployed with restrictive permissions (0600) but stored as plain text in git
-- The repository enforces SSH for GitHub operations via git config
-- Remote repository: `ssh://git@github.com/ppetroskevicius/dotfiles.git`
-- Python virtual environments expected at `.venv/bin/python` for LSP integration
-- Shell configurations include conditional loading based on available tools (terraform, gcloud, docker)
+**EditorConfig:**
 
-## Security Considerations
+- Universal formatting standards across all file types
+- Excludes: `.git`, `.venv`, `__pycache__`, `node_modules`
 
-- SSH key management via keychain (only loads if `~/.ssh/id_ed25519` exists)
-- Git configured to use SSH instead of HTTPS for GitHub
-- Editor configs exclude common directories from analysis: `.git`, `.venv`, `__pycache__`, `node_modules`
+**Git:**
 
-## Machine Types
+- SSH enforced for GitHub operations
+- Auto-rebase disabled
+- SSH key management via keychain (loads only if `~/.ssh/id_ed25519` exists)
 
-There are several machine types, that will have different sets of the dotfiles as in the below table.
+## Security
 
-- **bm-hypervisor**: Bare Metal Hypervisor Hosts (KVM hosts for running VMs)
-- **vm-k8s-node**: Kubernetes VM Nodes (k3s master/worker nodes)
-- **vm-dev-container**: Development Container VM Hosts (for Dev Containers)
-- **vm-service**: Service-Specific VMs (standalone services like NFS, databases)
-- **dt-dev**: Development Desktops (physical desktops for interactive work)
+- **SSH Keys**: Managed via 1Password, deployed from `op://Personal/ssh-key-ed25519`
+- **WireGuard**: Configuration stored in 1Password at `op://build/wireguard/conf`
+- **Service Account**: Read-only 1Password token for automation
+- **File Permissions**: Sensitive files (SSH keys, WireGuard configs) set to `600`, owned by `root:root` where appropriate
 
-## Dotfiles
+## Deployment
 
-Different sets dotfiles (for headless servers and for desktops) will be applied depending on the machine type. Also dotfiles might depend on the OS, like there is no sway configuration for Mac, as it is only used for Ubuntu.
+### Initial Setup (New Machine)
 
-| Package/Tool         | bm-hypervisor | vm-k8s-node | vm-dev-container | vm-service | dt-dev | Notes                                 |
-| -------------------- | ------------- | ----------- | ---------------- | ---------- | ------ | ------------------------------------- |
-| Dotfiles (all)       | ✓             | ✓           | ✓                | ✓          | ✓      | All dotfiles (per user preference)    |
-| SSH config           | ✓             | ✓           | ✓                | ✓          | ✓      | SSH configuration                     |
-| Git config           | ✓             | ✓           | ✓                | ✓          | ✓      | Git configuration                     |
-| Zsh config           | ✓             | ✓           | ✓                | ✓          | ✓      | Zsh configuration                     |
-| Tmux config          | ✓             | ✓           | ✓                | ✓          | ✓      | Tmux configuration                    |
-| Vim config           | ✓             | ✓           | ✓                | ✓          | ✓      | Vim configuration                     |
-| Alacritty config     | ✗             | ✗           | ✗                | ✗          | ✓      | Terminal config                       |
-| Starship config      | ✗             | ✗           | ✗                | ✗          | ✓      | Prompt config (if Starship installed) |
-| Sway config          | ✗             | ✗           | ✗                | ✗          | ✓      | Window manager config                 |
-| Mako config          | ✗             | ✗           | ✗                | ✗          | ✓      | Notification config                   |
-| i3status-rust config | ✗             | ✗           | ✗                | ✗          | ✓      | Status bar config                     |
-| Ruff config          | ✗             | ✗           | ✗                | ✗          | ✓      | Python linter config                  |
-| Zed config           | ✗             | ✗           | ✗                | ✗          | ✓      | Editor config                         |
-| Cursor config        | ✗             | ✗           | ✗                | ✗          | ✓      | Editor config                         |
-| AWS config           | ✗             | ✗           | ✗                | ✗          | ✓      | AWS configuration                     |
-| GCP configs          | ✗             | ✗           | ✗                | ✗          | ✓      | GCP configurations                    |
+```bash
+# 1. Set 1Password service account token
+export OP_SERVICE_ACCOUNT_TOKEN="ops_xxxxxxxxxxxxx"
+
+# 2. Initialize chezmoi with custom source directory
+chezmoi init --source ~/fun/homelab/chezmoi --apply
+```
+
+### Manual Updates
+
+```bash
+# Pull latest changes and apply
+chezmoi update
+
+# Or step-by-step
+chezmoi cd
+git pull
+exit
+chezmoi apply
+```
+
+## File Naming Conventions
+
+Chezmoi uses special prefixes:
+
+- `dot_` → `.` (dotfile)
+- `private_` → Sets restrictive permissions
+- `executable_` → Makes file executable
+- `.tmpl` → Template file (processed with variables)
+- `run_` → Script executed during `chezmoi apply`
+- `run_onchange_` → Script executed only when it changes
+
+Examples:
+
+- `dot_zshrc` → `~/.zshrc`
+- `private_dot_ssh/private_config` → `~/.ssh/config` (restricted permissions)
+- `dot_config/sway/config.tmpl` → `~/.config/sway/config` (templated)
+- `run_wireguard.sh` → Executed during apply
+
+## Machine-Specific Logic
+
+Files are conditionally applied via `.chezmoiignore`:
+
+```
+{{- if not (hasPrefix "dt-" .chezmoi.hostname) }}
+# Desktop-only files ignored on non-desktop machines
+dot_alacritty.toml.tmpl
+dot_config/sway/
+private_etc_wireguard_gw0.conf.tmpl
+{{- end }}
+```
+
+## Troubleshooting
+
+```bash
+# Check configuration
+chezmoi doctor
+
+# See what would change (dry run)
+chezmoi apply --dry-run
+
+# View differences
+chezmoi diff
+
+# Verify all files are in sync
+chezmoi verify
+
+# Debug template data
+chezmoi data
+```
+
+## References
+
+- [Chezmoi Documentation](https://www.chezmoi.io/)
+- [1Password CLI Documentation](https://developer.1password.com/docs/cli/)
+- See `README.md` for daily workflow commands
