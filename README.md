@@ -1,139 +1,177 @@
 # Chezmoi Dotfiles Repository
 
-This repository contains dotfiles managed by chezmoi, including shell configurations (bash, zsh), editor configs (vim, zed, Cursor), window manager settings (sway), and various application configurations. Files with the `private_` prefix are deployed with restrictive permissions (0600) but are stored in plain text in this repository.
+This repository contains dotfiles managed by chezmoi, including shell configurations (bash, zsh), editor configs (vim, zed, Cursor), window manager settings (sway), and various application configurations.
 
 ## Prerequisites
 
-Make sure you have 1password installed, and authenticate before running the `chezmoi apply`:
+The asumption is that `chezmoi apply` will be run from Ansible to install new machines, VMs and desktops remotely. It is also assumed, that 1password CLI will be installed on the remote machines with Ansible ahead of running the `chezmoi apply`. Current chezmoi configuration assumes that the 1password service account token (`OP_SERVICE_ACCOUNT_TOKEN`) is configurred in the environment for the automatic authentication.
 
 ```bash
-# Run this in your terminal first
-eval $(op signin)
+# Ensure token is available
+export OP_SERVICE_ACCOUNT_TOKEN="ops_xxxxxxxxxxxxx"
 
-# THEN run chezmoi
+# Test 1Password access
+op vault list
+
+# Apply dotfiles with secrets
 chezmoi apply
 ```
 
-## Installation on a New Machine
+## Chezmoi Quick Reference
 
-1. Install chezmoi:
+A quick reference guide for day-to-day chezmoi operations.
 
-   ```bash
-   sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply ppetroskevicius/dotfiles
-   ```
+### Repository Location
 
-   Or if you already have chezmoi installed:
+- **Chezmoi source directory**: `~/.local/share/chezmoi` (default, but see custom setup below)
+- **Chezmoi config file**: `~/.config/chezmoi/chezmoi.toml`
+- **Custom setup**: This repo uses a subdirectory within the larger homelab repo at `~/fun/homelab/chezmoi`
 
-   ```bash
-   chezmoi init --apply ppetroskevicius/dotfiles
-   ```
+### Custom Repository Setup
 
-   This will clone the repository and apply all dotfiles to your home directory.
+To use a subdirectory within a larger Git repository:
 
-## Editing Existing Dotfiles
+```bash
+# Initialize chezmoi with a custom source directory
+chezmoi init --source ~/fun/homelab/chezmoi
 
-1. **Recommended method:** Edit the source files in the chezmoi repository, then apply:
+# Or if already initialized, change the source path
+chezmoi init --source ~/fun/homelab/chezmoi --apply
+```
 
-   ```bash
-   cd ~/.local/share/chezmoi
-   # Edit the source file (e.g., private_dot_zshrc)
-   vim private_dot_zshrc
-   # Apply changes to your home directory
-   chezmoi apply
-   ```
+Add to `~/.config/chezmoi/chezmoi.toml`:
 
-2. **Alternative method:** Use chezmoi's edit command:
+```toml
+[sourceDir]
+    path = "~/fun/homelab/chezmoi"
+```
 
-   ```bash
-   chezmoi edit ~/.zshrc
-   # This opens the source file for editing
-   # Changes are automatically applied when you save
-   ```
+### Daily Workflow Commands
 
-## Adding New Dotfiles
+#### Applying Dotfiles
 
-1. Add an existing file to chezmoi:
+```bash
+# Apply all dotfiles from the repo to your home directory
+chezmoi apply
 
-   ```bash
-   chezmoi add ~/.mynewconfig
-   ```
+# Apply with verbose output
+chezmoi apply -v
 
-2. For files that should have restrictive permissions, use the `private_` prefix:
+# Dry run - see what would change without making changes
+chezmoi apply --dry-run
+```
 
-   ```bash
-   chezmoi add --autotemplate ~/.mynewconfig
-   # Then rename if needed: mv dot_mynewconfig private_dot_mynewconfig
-   ```
+#### Adding Files to Chezmoi
 
-3. Commit and push:
-   ```bash
-   cd ~/.local/share/chezmoi
-   git add .
-   git commit -m "Add new dotfile"
-   git push
-   ```
+```bash
+# Add a new file to chezmoi management
+chezmoi add ~/.zshrc
 
-## Updating Local Dotfiles from Remote
+# Add a file as a template (for use with variables)
+chezmoi add --template ~/.config/starship.toml
 
-1. Pull the latest changes from the repository:
+# Add a private file (will be prefixed with 'private_')
+chezmoi add --private ~/.ssh/config
 
-   ```bash
-   cd ~/.local/share/chezmoi
-   git pull
-   ```
+# Add an executable script
+chezmoi add --executable ~/.local/bin/myscript.sh
+```
 
-2. Apply the updates to your home directory:
+#### Editing Files
 
-   ```bash
-   chezmoi apply
-   ```
+```bash
+# Edit a file in chezmoi (opens your $EDITOR)
+chezmoi edit ~/.zshrc
 
-   Or combine both steps:
+# Edit and apply immediately
+chezmoi edit --apply ~/.zshrc
 
-   ```bash
-   chezmoi update
-   ```
+# Edit the source file directly
+vim ~/.local/share/chezmoi/dot_zshrc
+```
+
+#### Viewing Changes
+
+```bash
+# See what changes would be applied
+chezmoi diff
+
+# See the actual content of a managed file after templating
+chezmoi cat ~/.zshrc
+
+# Compare current state with what chezmoi would apply
+chezmoi verify
+```
+
+#### Managing Files
+
+```bash
+# List all files managed by chezmoi
+chezmoi managed
+
+# List files in your home directory NOT managed by chezmoi
+chezmoi unmanaged
+
+# Remove a file from chezmoi management (doesn't delete the file)
+chezmoi forget ~/.zshrc
+
+# Update chezmoi's copy from your home directory
+chezmoi re-add ~/.zshrc
+```
+
+#### Git Integration
+
+**Important:** After `chezmoi add` or `chezmoi edit`, chezmoi does NOT automatically commit or push changes to Git. You need to manually commit and push.
+
+```bash
+# After adding or editing files, commit your changes
+cd ~/fun/homelab/chezmoi
+git status
+git add .
+git commit -m "Update dotfiles"
+git push
+
+# Or use chezmoi's built-in git commands (works from anywhere)
+chezmoi cd           # Navigate to the source directory
+git status
+git add .
+git commit -m "Update dotfiles"
+git push
+exit                 # Return to previous directory
+```
+
+### State and Updates
+
+```bash
+# Pull latest changes from Git and apply
+chezmoi update
+
+# Or in two steps:
+chezmoi git pull
+chezmoi apply
+
+# Initialize chezmoi on a new machine
+chezmoi init --apply https://github.com/yourusername/homelab.git
+```
+
+Files are automatically included/excluded based on machine type via `.chezmoiignore`.
+
+### Troubleshooting
+
+```bash
+# Check chezmoi's view of your configuration
+chezmoi doctor
+
+# Force re-apply all files
+chezmoi apply --force
+```
 
 ## Machine Type Configuration
 
-This dotfiles repository supports different machine types, deploying different sets of configuration files based on the target machine:
+Bellow machine types are supported:
 
-- **Desktop machines** (`dt-dev`): Get all configs including GUI applications, editors, cloud tools
-- **Server machines**: Only get core configs like SSH, Git, Zsh, Tmux, Vim
-
-### Setting Machine Type
-
-**Default:** The repository defaults to `dt-dev` (desktop development) which includes all configuration files.
-
-**Manual Override:** Set the machine type by editing `~/.config/chezmoi/chezmoi.toml`:
-```toml
-[data.machine]
-    type = "vm-k8s-node"  # or bm-hypervisor, vm-dev-container, vm-service
-```
-
-**Hostname-Based Detection:** Use the included script to automatically detect based on hostname patterns:
-```bash
-cd ~/.local/share/chezmoi
-./check-machine-type.sh
-# This will suggest the appropriate machine type based on hostname
-# Then manually set it in ~/.config/chezmoi/chezmoi.toml
-```
-
-**Available Types:**
 - `dt-dev`: Development Desktop (default - all configs)
 - `bm-hypervisor`: Bare Metal Hypervisor (core configs only)
-- `vm-k8s-node`: Kubernetes Node (core configs only) 
+- `vm-k8s-node`: Kubernetes Node (core configs only)
 - `vm-dev-container`: Development Container Host (core configs only)
 - `vm-service`: Service VM (core configs only)
-
-## Important Notes
-
-- **File Permissions:** Files with `private_` prefix are deployed with `0600` permissions (owner read/write only) but are stored in plain text in the repository. For actual encryption, use the `encrypted_` prefix with `chezmoi encrypt`.
-
-- **Checking Status:** Use `chezmoi status` to see which files differ between the source and your home directory.
-
-- **Viewing Differences:** Use `chezmoi diff` to see what changes would be applied.
-
-- **Repository Location:** The chezmoi source directory is at `~/.local/share/chezmoi`. This is a git repository that tracks all your dotfile sources.
-
-- **Remote Repository:** This repository is hosted at `ssh://git@github.com/ppetroskevicius/dotfiles.git`
